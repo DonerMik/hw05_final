@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}
+  Новый пост
+{%endblock%}
+{% block content %}
+     <div class="container py-5">
+        <div class="row justify-content-center">
+          <div class="col-md-8 p-5">
+            <div class="card">
+              <div class="card-header">
+                  {% if is_edit %}
+                  Сохранить
+                  {% else %}
+                  Добавить
+                  {% endif %}
+              </div>
+              <div class="card-body">
+                 {% if is_edit %}
+                        <form method="post"
+                        enctype="multipart/form-data"
+                        action="{% url 'posts:post_edit' post_id %}">
+
+                 {% else %}
+                       <form method="post"
+                       enctype="multipart/form-data"
+                       action="{% url 'posts:post_create' %}">
+
+                 {% endif %}
+                {% csrf_token %}
+                  <div class="form-group row my-3 p-3">
+
+                    {{ form.text}}
+                    <small id="id_text-help" class="form-text text-muted">
+                      Текст нового поста
+                    </small>
+                  </div>
+                  <div class="form-group row my-3 p-3">
+                      {% if form.group %}
+                      {{ form.group }}
+                      {% endif %}
+
+                    <small id="id_group-help" class="form-text text-muted">
+                      Группа, к которой будет относиться пост
+                    </small>
+                  <div>
+                     {{ form.image }}
+                  </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">
+                        {% if is_edit %}
+                        Сохранить
+                        {% else %}
+                        Добавить
+                        {% endif %}
+                    </button>
+                  </div>
+                </form>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{%endblock%}
+
