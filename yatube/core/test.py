@@ -4,6 +4,7 @@ from django.test import Client, TestCase
 
 User = get_user_model()
 
+
 class CoreTestClass(TestCase):
     @classmethod
     def setUp(self):

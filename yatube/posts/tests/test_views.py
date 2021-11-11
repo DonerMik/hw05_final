@@ -273,8 +273,9 @@ class FollowViewsTest(TestCase):
         self.authorized_client2.force_login(self.user2)
 
     def test_user_follower_authors(self):
-        url_redirect = reverse('posts:profile',
-                               kwargs={'username': FollowViewsTest.author.username})
+        url_redirect = reverse(
+            'posts:profile',
+            kwargs={'username': FollowViewsTest.author.username})
         response = self.authorized_client.get(
             reverse('posts:profile_follow', kwargs={
                 'username': FollowViewsTest.author.username})
@@ -287,8 +288,9 @@ class FollowViewsTest(TestCase):
         self.assertRedirects(response, url_redirect)
 
     def test_user_unfollower_authors(self):
-        url_redirect = reverse('posts:profile',
-                               kwargs={'username': FollowViewsTest.author.username})
+        url_redirect = reverse(
+            'posts:profile',
+            kwargs={'username': FollowViewsTest.author.username})
         response = self.authorized_client.get(
             reverse('posts:profile_unfollow', kwargs={
                 'username': FollowViewsTest.author})
