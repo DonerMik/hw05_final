@@ -23,7 +23,7 @@
 
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link {% if view_name  == 'about:new_post' %}active{% endif %}"
+          <a class="nav-link {% if view_name  == 'posts:post_create' %}active{% endif %}"
              href="{% url 'posts:post_create' %}">
             Новая запись
           </a>

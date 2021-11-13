@@ -155,7 +155,6 @@ class CommentFormTest(TestCase):
     def test_guest_no_comment(self):
         count_comment = Comment.objects.count()
         form_data = {
-
             'text': 'Комментарий из формы'
         }
         response = self.guest_client.post(
@@ -187,6 +186,17 @@ class CommentFormTest(TestCase):
             follow=True,
         )
         new_count = Comment.objects.count()
-        last_comment = (response.context['comments'][0])
+        reverse_url = reverse(
+            'posts:post_detail',
+            kwargs={'post_id': CommentFormTest.post.pk})
+
         self.assertEqual(count_comment + 1, new_count)
-        self.assertEqual(last_comment.text, form_data['text'])
+        self.assertRedirects(response, reverse_url)
+        # Это я бывает дополнительно проверяю
+        # Чтобы переменную респонс задействовать
+        # Лучше убрать респонсе? или подобрать более
+        # близкий тест?
+
+
+
+

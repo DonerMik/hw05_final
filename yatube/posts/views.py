@@ -92,6 +92,7 @@ def post_create(request):
     return render(request, 'posts/create_post.html', context)
 
 
+@login_required()
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
@@ -141,11 +142,8 @@ def follow_index(request):
 @login_required()
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    exist_follow = Follow.objects.filter(
-        user=request.user).filter(
-        author=author).exists()
-    if request.user != author and not exist_follow:
-        Follow.objects.create(
+    if request.user != author:
+        Follow.objects.get_or_create(
             user=request.user,
             author=author)
     return redirect('posts:profile', username=username)
@@ -154,17 +152,7 @@ def profile_follow(request, username):
 @login_required()
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    exist_follow = Follow.objects.filter(
+    Follow.objects.filter(
         user=request.user).filter(
-        author=author).exists()
-    if request.user != author and exist_follow:
-        Follow.objects.filter(
-            user=request.user).filter(
-            author=author).delete()
+        author=author).delete()
     return redirect('posts:profile', username=username)
-
-#  не понимаю почему на самом сайте при нажатии не пост
-# посте не выделяется вкладка в синий, как при нажатии
-# во вкладки ""Об авторе"
-# посмотрите шаблоны мои, думаю там есть что зарефакторить
-# Рефакторингом совсем не занимался, укажите что сделать.

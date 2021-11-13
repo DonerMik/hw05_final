@@ -256,15 +256,6 @@ class FollowViewsTest(TestCase):
         cls.user2 = User.objects.create_user(username='auth2')
         cls.author = User.objects.create_user(username='someauthor')
 
-        cls.post = Post.objects.create(
-            author=cls.author,
-            text='Текстовый текст')
-
-        cls.folower = Follow.objects.create(
-            user=cls.user,
-            author=cls.author
-        )
-
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
@@ -273,42 +264,77 @@ class FollowViewsTest(TestCase):
         self.authorized_client2.force_login(self.user2)
 
     def test_user_follower_authors(self):
+        count_follow = len(Follow.objects.filter(
+            user=FollowViewsTest.user))
+        data_follow = {'user': FollowViewsTest.user,
+                       'author': FollowViewsTest.author
+        }
         url_redirect = reverse(
             'posts:profile',
             kwargs={'username': FollowViewsTest.author.username})
-        response = self.authorized_client.get(
+        # Логика моя была, что я не умышленно создаю объект
+        # как пост или коммент. Я прохожу по обычной ссылке
+        # то есть и не передаю никаких объектов. Поэтому get.
+        # джанго сам создают объект без моего участия
+        response = self.authorized_client.post(
             reverse('posts:profile_follow', kwargs={
-                'username': FollowViewsTest.author.username})
-        )
+                'username': FollowViewsTest.author.username}),
+            data=data_follow, follow=True)
         exist_follow = Follow.objects.filter(
             user=FollowViewsTest.user,
             author=FollowViewsTest.author
         ).exists()
+        new_count_follow = len(Follow.objects.filter(
+            user=FollowViewsTest.user))
         self.assertEqual(exist_follow, True)
         self.assertRedirects(response, url_redirect)
+        self.assertEqual(count_follow + 1, new_count_follow)
 
     def test_user_unfollower_authors(self):
+        count_follow = len(Follow.objects.filter(
+            user=FollowViewsTest.user))
+        data_follow = {'user': FollowViewsTest.user,
+                       'author': FollowViewsTest.author
+        }
         url_redirect = reverse(
             'posts:profile',
             kwargs={'username': FollowViewsTest.author.username})
-        response = self.authorized_client.get(
+        response = self.authorized_client.post(
             reverse('posts:profile_unfollow', kwargs={
-                'username': FollowViewsTest.author})
+                'username': FollowViewsTest.author}),
+            data=data_follow,
+            follow=True
         )
         exist_follow = Follow.objects.filter(
             user=FollowViewsTest.user,
             author=FollowViewsTest.author
         ).exists()
+        new_count_follow = len(Follow.objects.filter(
+            user=FollowViewsTest.user))
         self.assertEqual(exist_follow, False)
         self.assertRedirects(response, url_redirect)
+        self.assertEqual(count_follow, new_count_follow)
 
-    def test_folower_see_new_post(self):
+    def test_follower_see_new_post(self):
+        new_post_follower = Post.objects.create(
+            author=FollowViewsTest.author,
+            text='Текстовый текст')
+        new_follower = Follow.objects.create(
+            user=FollowViewsTest.user,
+            author=FollowViewsTest.author)
         response_follower = self.authorized_client.get(
             reverse('posts:follow_index'))
         new_posts = response_follower.context['page_obj'][0]
-        self.assertEqual(new_posts, FollowViewsTest.post)
+        self.assertEqual(new_posts, new_post_follower)
 
-        response_unfollower = self.authorized_client2.get(
+    def test_unfollower_see_new_post(self):
+        Post.objects.create(
+            author=FollowViewsTest.author,
+            text='Текстовый текст')
+        Follow.objects.create(
+            user=FollowViewsTest.user,
+            author=FollowViewsTest.author)
+        response_follower = self.authorized_client2.get(
             reverse('posts:follow_index'))
-        new_posts_unfollower = response_unfollower.context['page_obj']
-        self.assertEqual(len(new_posts_unfollower), 0)
+        new_post = len(response_follower.context['page_obj'])
+        self.assertEqual(new_post, 0)

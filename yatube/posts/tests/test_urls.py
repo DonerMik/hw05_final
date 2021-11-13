@@ -38,7 +38,9 @@ class PostURLTests(TestCase):
         url_index = '/'
         url_group = '/group/test-slug/'
         url_profile = '/profile/auth/'
+        url_follow = '/follow/'
         templates_url_names = {
+            url_follow: 'posts/follow.html',
             url_index: 'posts/index.html',
             url_group: 'posts/group_list.html',
             url_profile: 'posts/profile.html',
