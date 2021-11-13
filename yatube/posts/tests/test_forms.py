@@ -192,11 +192,7 @@ class CommentFormTest(TestCase):
 
         self.assertEqual(count_comment + 1, new_count)
         self.assertRedirects(response, reverse_url)
-        # Это я бывает дополнительно проверяю
+        # Это я бывает дополнительно проверяю еще что нить
         # Чтобы переменную респонс задействовать
         # Лучше убрать респонсе? или подобрать более
         # близкий тест?
-
-
-
-

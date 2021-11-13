@@ -267,8 +267,7 @@ class FollowViewsTest(TestCase):
         count_follow = len(Follow.objects.filter(
             user=FollowViewsTest.user))
         data_follow = {'user': FollowViewsTest.user,
-                       'author': FollowViewsTest.author
-        }
+                       'author': FollowViewsTest.author}
         url_redirect = reverse(
             'posts:profile',
             kwargs={'username': FollowViewsTest.author.username})
@@ -294,8 +293,7 @@ class FollowViewsTest(TestCase):
         count_follow = len(Follow.objects.filter(
             user=FollowViewsTest.user))
         data_follow = {'user': FollowViewsTest.user,
-                       'author': FollowViewsTest.author
-        }
+                       'author': FollowViewsTest.author}
         url_redirect = reverse(
             'posts:profile',
             kwargs={'username': FollowViewsTest.author.username})
@@ -319,7 +317,7 @@ class FollowViewsTest(TestCase):
         new_post_follower = Post.objects.create(
             author=FollowViewsTest.author,
             text='Текстовый текст')
-        new_follower = Follow.objects.create(
+        Follow.objects.create(
             user=FollowViewsTest.user,
             author=FollowViewsTest.author)
         response_follower = self.authorized_client.get(
