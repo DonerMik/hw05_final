@@ -189,10 +189,8 @@ class CommentFormTest(TestCase):
         reverse_url = reverse(
             'posts:post_detail',
             kwargs={'post_id': CommentFormTest.post.pk})
-
+        last_comment = Comment.objects.filter(post=CommentFormTest.post.pk)[0]
         self.assertEqual(count_comment + 1, new_count)
         self.assertRedirects(response, reverse_url)
-        # Это я бывает дополнительно проверяю еще что нить
-        # Чтобы переменную респонс задействовать
-        # Лучше убрать респонсе? или подобрать более
-        # близкий тест?
+        self.assertEqual(last_comment.text, form_data['text'])
+        self.assertEqual(last_comment.author, CommentFormTest.user)

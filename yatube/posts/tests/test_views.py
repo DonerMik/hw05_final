@@ -264,17 +264,13 @@ class FollowViewsTest(TestCase):
         self.authorized_client2.force_login(self.user2)
 
     def test_user_follower_authors(self):
-        count_follow = len(Follow.objects.filter(
-            user=FollowViewsTest.user))
+        count_follow = Follow.objects.filter(
+            user=FollowViewsTest.user).count()
         data_follow = {'user': FollowViewsTest.user,
                        'author': FollowViewsTest.author}
         url_redirect = reverse(
             'posts:profile',
             kwargs={'username': FollowViewsTest.author.username})
-        # Логика моя была, что я не умышленно создаю объект
-        # как пост или коммент. Я прохожу по обычной ссылке
-        # то есть и не передаю никаких объектов. Поэтому get.
-        # джанго сам создают объект без моего участия
         response = self.authorized_client.post(
             reverse('posts:profile_follow', kwargs={
                 'username': FollowViewsTest.author.username}),
@@ -283,8 +279,8 @@ class FollowViewsTest(TestCase):
             user=FollowViewsTest.user,
             author=FollowViewsTest.author
         ).exists()
-        new_count_follow = len(Follow.objects.filter(
-            user=FollowViewsTest.user))
+        new_count_follow = Follow.objects.filter(
+            user=FollowViewsTest.user).count()
         self.assertEqual(exist_follow, True)
         self.assertRedirects(response, url_redirect)
         self.assertEqual(count_follow + 1, new_count_follow)
