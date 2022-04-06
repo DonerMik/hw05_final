@@ -28,4 +28,4 @@ python3 manage.py migrate
 
 python3 manage.py runserver
 
-Запустите проект по адресу http://127.0.0.1:8000/redoc/
+Запустите проект по адресу http://127.0.0.1:8000/
