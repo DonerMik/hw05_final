@@ -25,7 +25,9 @@ SECRET_KEY = 'q&qdtd)3f2%@fm8@wc=#b$8*)uxf^6cac9dmicd=wvziane2f$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+ALLOWED_HOSTS = ['127.0.0.1',
+                 'localhost',
+                 ]
 
 
 # Application definition
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -52,8 +55,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 ROOT_URLCONF = 'yatube.urls'
 TEMPALATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
